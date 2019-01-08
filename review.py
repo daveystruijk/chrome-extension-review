@@ -29,19 +29,18 @@ for directory in directories:
     versions = find_directories(directory)
     if not versions:
         continue
-    print(directory)
     current_dir = sorted(versions)[-1]
     with open(current_dir + '/manifest.json') as f:
         manifest = json.load(f)
     name = manifest['name']
     if '__MSG_' in name:
         messages = load_messages_file(current_dir)
-        #pprint(messages)
         search_string = name.replace('__MSG_', '').replace('__', '')
         for key, value in messages.items():
             if key.lower() == search_string.lower():
                 name = value['message']
 
+    print("=> " + name)
     save_path = os.getcwd() + '/extensions/' + name
 
     if os.path.isdir(save_path + '/.git'):
@@ -49,7 +48,7 @@ for directory in directories:
         shutil.rmtree(save_path)
         shutil.copytree(current_dir + '/', save_path)
         shutil.move(os.getcwd() + '/.tempgit', save_path + '/.git')
-        call(["git", "status"], cwd=save_path)
+        call(["git", "status", "--short"], cwd=save_path)
     else:
         shutil.copytree(current_dir + '/', save_path)
         call(["git", "init"], cwd=save_path)
