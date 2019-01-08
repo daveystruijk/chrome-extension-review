@@ -1,6 +1,8 @@
 import os
 import glob2
 import json
+import shutil
+from subprocess import call
 from pprint import pprint
 
 
@@ -27,7 +29,8 @@ for directory in directories:
     versions = find_directories(directory)
     if not versions:
         continue
-    current_dir = versions[0]
+    print(directory)
+    current_dir = sorted(versions)[-1]
     with open(current_dir + '/manifest.json') as f:
         manifest = json.load(f)
     name = manifest['name']
@@ -38,5 +41,17 @@ for directory in directories:
         for key, value in messages.items():
             if key.lower() == search_string.lower():
                 name = value['message']
-    print(name)
 
+    save_path = os.getcwd() + '/extensions/' + name
+
+    if os.path.isdir(save_path + '/.git'):
+        shutil.move(save_path + '/.git', os.getcwd() + '/.tempgit')
+        shutil.rmtree(save_path)
+        shutil.copytree(current_dir + '/', save_path)
+        shutil.move(os.getcwd() + '/.tempgit', save_path + '/.git')
+        call(["git", "status"], cwd=save_path)
+    else:
+        shutil.copytree(current_dir + '/', save_path)
+        call(["git", "init"], cwd=save_path)
+        call(["git", "add", "--all"], cwd=save_path)
+        call(["git", "commit", "-m", "Initial commit"], cwd=save_path)
