@@ -5,4 +5,4 @@ This script will create git repositories for your chrome extensions, so you can 
 Usage:
 `python review.py`
 
-Works well with (Extensions Update Notifier)[https://chrome.google.com/webstore/detail/extensions-update-notifie/nlldbplhbaopldicmcoogopmkonpebjm] (configured with auto-disable on update).
+Works well with [Extensions Update Notifier](https://chrome.google.com/webstore/detail/extensions-update-notifie/nlldbplhbaopldicmcoogopmkonpebjm) (configured with auto-disable on update).
